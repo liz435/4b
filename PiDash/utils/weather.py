@@ -31,3 +31,10 @@ def get_weather(lat, lon):
     except Exception as e:
         print("Weather API error:", e)
         return None
+
+def fahrenheit_to_celsius(fahrenheit):
+    """
+    Convert Fahrenheit to Celsius.
+    Formula: (F - 32) * 5/9
+    """
+    return (fahrenheit - 32) * 5 / 9
