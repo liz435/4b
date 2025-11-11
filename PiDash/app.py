@@ -177,7 +177,7 @@ st.markdown("""
     }
     
     .train-direction {
-        font-size: 0.9rem;
+        font-size: 1.3rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
         opacity: 0.8;
@@ -323,7 +323,7 @@ with col2:
     up_col, down_col = st.columns(2)
 
     with up_col:
-        st.markdown('<div class="train-direction">To 8 Av</div>', unsafe_allow_html=True)
+        st.markdown('<div class="train-direction">To 8 Av MANHATTAN</div>', unsafe_allow_html=True)
         northbound = arrivals.get("L15N", [])[:4]
         if northbound:
             for arrival in northbound:
@@ -339,7 +339,7 @@ with col2:
             st.markdown('<div class="no-data">No upcoming trains</div>', unsafe_allow_html=True)
 
     with down_col:
-        st.markdown('<div class="train-direction">To Canarsie</div>', unsafe_allow_html=True)
+        st.markdown('<div class="train-direction">To Canarsie ROCKAWAY</div>', unsafe_allow_html=True)
         southbound = arrivals.get("L15S", [])[:4]
         if southbound:
             for arrival in southbound:
