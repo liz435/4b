@@ -21,6 +21,25 @@ count = st_autorefresh(interval=30 * 1000, key="datarefresh")
 st.title("4B")
 st.caption(f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
+# Determine theme based on time
+ny_tz = pytz.timezone("America/New_York")
+current_hour = datetime.datetime.now(ny_tz).hour
+if 6 <= current_hour < 19:
+    theme = "light"
+else:
+    theme = "dark"
+
+st.markdown(
+    f"""
+    <style>
+        body {{
+            background-color: {'#ffffff' if theme == 'light' else '#333333'};
+            color: {'#000000' if theme == 'light' else '#ffffff'};
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # ---- Split Page into Two Columns ----
 col1, col2 = st.columns(2)
