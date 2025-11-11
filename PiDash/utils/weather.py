@@ -1,5 +1,4 @@
 import requests
-import threading
 import time
 
 def get_weather(lat, lon):

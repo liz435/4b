@@ -1,7 +1,6 @@
 from google.transit import gtfs_realtime_pb2
 import requests
 from datetime import datetime
-import openai
 
 def get_l_train_alerts(latest_only=True, route_filter="L"):
     url = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
