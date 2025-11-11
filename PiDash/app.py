@@ -282,9 +282,21 @@ with col1:
         </div>
         """, unsafe_allow_html=True)
         
-        # Weather details grid
+        # Convert Fahrenheit to Celsius for highest and lowest temperatures
+        highest_temp_celsius = fahrenheit_to_celsius(data['highest_temperature'])
+        lowest_temp_celsius = fahrenheit_to_celsius(data['lowest_temperature'])
+
+        # Weather details grid with highest and lowest temperatures in Celsius
         st.markdown(f"""
         <div class="weather-grid">
+            <div class="weather-item">
+                <div class="weather-label">Highest Temp</div>
+                <div class="weather-value">{highest_temp_celsius:.1f}°C</div>
+            </div>
+            <div class="weather-item">
+                <div class="weather-label">Lowest Temp</div>
+                <div class="weather-value">{lowest_temp_celsius:.1f}°C</div>
+            </div>
             <div class="weather-item">
                 <div class="weather-label">Wind Speed</div>
                 <div class="weather-value">{data['windSpeed']}</div>

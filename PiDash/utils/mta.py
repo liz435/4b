@@ -2,11 +2,11 @@ from google.transit import gtfs_realtime_pb2
 import requests, datetime
 import openai
 
-def get_mta_status(stop_id="L20S"):
+def get_mta_status(stop_id="L15S"):
     """
-    Jefferson St = L20
-    L20S: southbound (to Canarsie)
-    L20N: northbound (to 8 Av)
+    Jefferson St = L15
+    L15S: southbound (to Canarsie)
+    L15N: northbound (to 8 Av)
     """
     url = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l"
     feed = gtfs_realtime_pb2.FeedMessage()

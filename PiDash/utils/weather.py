@@ -3,23 +3,37 @@ import time
 
 def get_weather(lat, lon):
     """
-    获取 NOAA 天气数据
     https://api.weather.gov/points/{lat},{lon}/forecast
     """
     try:
         # Step 1: 获取对应的 forecast URL
         meta_url = f"https://api.weather.gov/points/{lat},{lon}"
+
         meta_resp = requests.get(meta_url, timeout=5)
+
         meta_resp.raise_for_status()
         forecast_url = meta_resp.json()["properties"]["forecast"]
-
+        dayforecast_url = forecast_url.replace("forecast", "forecast/hourly")
+   
         # Step 2: 获取天气预报
         forecast_resp = requests.get(forecast_url, timeout=5)
+        dayforecast_resp = requests.get(dayforecast_url, timeout=5)
         forecast_resp.raise_for_status()
+        dayforecast_resp.raise_for_status()
         forecast_data = forecast_resp.json()
+        dayforecast_data = dayforecast_resp.json()
+        
+        print(dayforecast_data)
 
         # 获取最近的预报信息
         period = forecast_data["properties"]["periods"][0]
+
+        # 获取最高气温和最低气温
+        temperatures = [p["temperature"] for p in dayforecast_data["properties"]["periods"]]
+        highest_temp = max(temperatures)
+        lowest_temp = min(temperatures)
+
+        # 返回天气数据
         return {
             "name": period["name"],
             "temperature": period["temperature"],
@@ -27,7 +41,9 @@ def get_weather(lat, lon):
             "detailedForecast": period["detailedForecast"],
             "windSpeed": period["windSpeed"],
             "shortForecast": period["shortForecast"],
-            "icon": period["icon"]
+            "icon": period["icon"],
+            "highest_temperature": highest_temp,
+            "lowest_temperature": lowest_temp
         }
     except Exception as e:
         print("Weather API error:", e)
