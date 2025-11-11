@@ -1,10 +1,12 @@
 import streamlit as st
 import datetime
+import pytz
+from streamlit_autorefresh import st_autorefresh
+
+# Import utility functions
 from utils.weather import get_weather, fahrenheit_to_celsius
 from utils.get_l_train_alerts import get_l_train_alerts
 from utils.get_l_train_arrivals import get_l_train_arrivals
-from streamlit_autorefresh import st_autorefresh
-import pytz
 
 # ---- Page Config ----
 st.set_page_config(
@@ -13,87 +15,169 @@ st.set_page_config(
     layout="wide",
 )
 
-# ---- Custom CSS for sleek design ----
+# ---- Custom CSS for sleek, compact design ----
 st.markdown("""
 <style>
-    /* Remove default padding */
+    /* Remove default padding and maximize space */
     .block-container {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: 1rem;
+        padding-bottom: 0.5rem;
+        max-width: 100%;
     }
     
-    /* Card styling that adapts to theme */
-    .metric-card {
-        background-color: var(--background-color);
-        border: 1px solid var(--secondary-background-color);
-        border-radius: 12px;
-        padding: 1.5rem;
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Compact typography */
+    h1 {
+        font-size: 1.75rem !important;
+        font-weight: 600 !important;
+        margin: 0 0 0.25rem 0 !important;
+        padding: 0 !important;
+    }
+    
+    .stMarkdown p {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Time and date */
+    .time-display {
+        font-size: 3rem;
+        font-weight: 200;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+    
+    .date-display {
+        font-size: 1rem;
+        opacity: 0.7;
+        margin-bottom: 1.5rem;
+    }
+    
+    .last-updated {
+        font-size: 0.8rem;
+        opacity: 0.5;
         margin-bottom: 1rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
     }
     
-    .metric-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    /* Section headers */
+    .section-header {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.8;
+        border-bottom: 1px solid var(--secondary-background-color);
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Weather main card */
+    .weather-main {
+        background-color: var(--secondary-background-color);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .temp-large {
+        font-size: 3.5rem;
+        font-weight: 200;
+        line-height: 1;
+        margin: 0.5rem 0;
+    }
+    
+    .weather-condition {
+        font-size: 1.2rem;
+        opacity: 0.85;
+        margin-bottom: 0.5rem;
+    }
+    
+    .weather-location {
+        font-size: 0.85rem;
+        opacity: 0.6;
     }
     
     /* Weather details grid */
     .weather-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin: 1rem 0;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
     }
     
     .weather-item {
         background-color: var(--secondary-background-color);
-        border-radius: 8px;
-        padding: 1rem;
+        border-radius: 6px;
+        padding: 0.75rem;
         text-align: center;
     }
     
     .weather-label {
-        font-size: 0.85rem;
-        opacity: 0.7;
-        margin-bottom: 0.5rem;
+        font-size: 0.75rem;
+        opacity: 0.6;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .weather-value {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 600;
+    }
+    
+    /* Detailed forecast */
+    .forecast-detail {
+        background-color: var(--secondary-background-color);
+        border-radius: 6px;
+        padding: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        opacity: 0.85;
+    }
+    
+    /* Train section */
+    .train-direction {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
     }
     
     /* Train arrival cards */
     .train-card {
-        background: linear-gradient(135deg, var(--secondary-background-color) 0%, var(--background-color) 100%);
-        border-left: 4px solid #0066CC;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 0.75rem;
+        background-color: var(--secondary-background-color);
+        border-left: 3px solid #0066CC;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
     
     .train-time {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
         font-weight: 700;
     }
     
     .train-label {
-        font-size: 0.9rem;
-        opacity: 0.8;
+        font-size: 0.8rem;
+        opacity: 0.7;
     }
     
     /* Alert styling */
     .alert-box {
         background-color: #FFF3CD;
         color: #856404;
-        border-left: 4px solid #FFC107;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1rem;
+        border-left: 3px solid #FFC107;
+        border-radius: 6px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
     }
     
     [data-theme="dark"] .alert-box {
@@ -101,26 +185,21 @@ st.markdown("""
         color: #ffd966;
     }
     
-    /* Header styling */
-    .dashboard-header {
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--secondary-background-color);
+    .no-alert {
+        background-color: var(--secondary-background-color);
+        border-left: 3px solid #28a745;
+        border-radius: 6px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        opacity: 0.8;
     }
     
-    .time-display {
-        font-size: 2.5rem;
-        font-weight: 300;
-        margin-bottom: 0.5rem;
-    }
-    
-    .section-header {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+    .no-data {
+        text-align: center;
+        opacity: 0.5;
+        font-size: 0.85rem;
+        padding: 1rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -132,16 +211,14 @@ count = st_autorefresh(interval=30 * 1000, key="datarefresh")
 nyc_time = datetime.datetime.now(pytz.timezone("America/New_York"))
 
 # ---- Header ----
-st.markdown('<div class="dashboard-header">', unsafe_allow_html=True)
-st.title("🏠 Ebichu Dashboard")
-st.caption(f"Last updated: {nyc_time.strftime('%B %d, %Y at %I:%M:%S %p')}")
-st.markdown('</div>', unsafe_allow_html=True)
+st.title("Ebichu")
+st.markdown(f'<div class="last-updated">Last updated: {nyc_time.strftime("%B %d, %Y at %I:%M:%S %p")}</div>', unsafe_allow_html=True)
 
 # ---- Split Page into Two Columns ----
-col1, col2 = st.columns([1, 1], gap="large")
+col1, col2 = st.columns([1, 1], gap="medium")
 
 # ================================================================
-# LEFT COLUMN: WEATHER
+# LEFT COLUMN: TIME & WEATHER
 # ================================================================
 with col1:
     # Display current time
@@ -149,28 +226,24 @@ with col1:
     current_date = nyc_time.strftime("%A, %B %d")
     
     st.markdown(f'<div class="time-display">{current_time}</div>', unsafe_allow_html=True)
-    st.markdown(f'<p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 2rem;">{current_date}</p>', unsafe_allow_html=True)
+    st.markdown(f'<div class="date-display">{current_date}</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="section-header">🌤️ Outdoor Weather</div>', unsafe_allow_html=True)
+    # Weather Section
+    st.markdown('<div class="section-header">Outdoor Weather</div>', unsafe_allow_html=True)
     
     lat, lon = 40.7128, -74.0060
 
-    with st.spinner("Fetching weather data..."):
-        data = get_weather(lat, lon)
+    data = get_weather(lat, lon)
 
     if data:
         celsius_temp = fahrenheit_to_celsius(data['temperature'])
         
-        # Main weather card
+        # Main weather display
         st.markdown(f"""
-        <div class="metric-card">
-            <h3 style="margin-top: 0;">{data['name']}</h3>
-            <div style="font-size: 3rem; font-weight: 300; margin: 1rem 0;">
-                {celsius_temp:.1f}°C
-            </div>
-            <p style="font-size: 1.1rem; margin: 0; opacity: 0.9;">
-                {data['shortForecast']}
-            </p>
+        <div class="weather-main">
+            <div class="temp-large">{celsius_temp:.1f}°C</div>
+            <div class="weather-condition">{data['shortForecast']}</div>
+            <div class="weather-location">{data['name']}</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -182,15 +255,14 @@ with col1:
                 <div class="weather-value">{data['windSpeed']}</div>
             </div>
             <div class="weather-item">
-                <div class="weather-label">Temperature</div>
+                <div class="weather-label">Fahrenheit</div>
                 <div class="weather-value">{data['temperature']}°F</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Detailed forecast
-        with st.expander("📋 Detailed Forecast", expanded=False):
-            st.write(data["detailedForecast"])
+        # Detailed forecast (always visible)
+        st.markdown(f'<div class="forecast-detail">{data["detailedForecast"]}</div>', unsafe_allow_html=True)
     else:
         st.error("Failed to load weather data.")
 
@@ -198,7 +270,7 @@ with col1:
 # RIGHT COLUMN: L TRAIN
 # ================================================================
 with col2:
-    st.markdown('<div class="section-header">🚇 L Train @ Jefferson St</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">L Train at Jefferson St</div>', unsafe_allow_html=True)
 
     # Fetch alerts and arrival data
     alerts = get_l_train_alerts()
@@ -206,19 +278,16 @@ with col2:
 
     # ---- Alerts ----
     if alerts:
-        st.markdown("**⚠️ Service Alerts**")
         for alert in alerts:
             st.markdown(f'<div class="alert-box">{alert}</div>', unsafe_allow_html=True)
     else:
-        st.markdown("✅ **No current alerts**")
-    
-    st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown('<div class="no-alert">No current service alerts</div>', unsafe_allow_html=True)
 
     # ---- Arrivals in Two Columns ----
     up_col, down_col = st.columns(2)
 
     with up_col:
-        st.markdown("**⬆️ To 8 Av**")
+        st.markdown('<div class="train-direction">To 8 Av</div>', unsafe_allow_html=True)
         northbound = arrivals.get("L15N", [])[:3]
         if northbound:
             for arrival in northbound:
@@ -231,10 +300,10 @@ with col2:
                 </div>
                 """, unsafe_allow_html=True)
         else:
-            st.markdown('<p style="opacity: 0.6; text-align: center;">No upcoming trains</p>', unsafe_allow_html=True)
+            st.markdown('<div class="no-data">No upcoming trains</div>', unsafe_allow_html=True)
 
     with down_col:
-        st.markdown("**⬇️ To Canarsie**")
+        st.markdown('<div class="train-direction">To Canarsie</div>', unsafe_allow_html=True)
         southbound = arrivals.get("L15S", [])[:3]
         if southbound:
             for arrival in southbound:
@@ -247,4 +316,4 @@ with col2:
                 </div>
                 """, unsafe_allow_html=True)
         else:
-            st.markdown('<p style="opacity: 0.6; text-align: center;">No upcoming trains</p>', unsafe_allow_html=True)
+            st.markdown('<div class="no-data">No upcoming trains</div>', unsafe_allow_html=True)
