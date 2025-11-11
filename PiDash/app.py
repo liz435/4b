@@ -1,6 +1,6 @@
 import streamlit as st
 import datetime
-from utils.weather import get_weather, fahrenheit_to_celsius
+from utils.weather import get_weather
 from utils.get_l_train_alerts import get_l_train_alerts
 from utils.get_l_train_arrivals import get_l_train_arrivals
 from streamlit_autorefresh import st_autorefresh
@@ -159,14 +159,13 @@ with col1:
         data = get_weather(lat, lon)
 
     if data:
-        celsius_temp = fahrenheit_to_celsius(data['temperature'])
         
         # Main weather card
         st.markdown(f"""
         <div class="metric-card">
             <h3 style="margin-top: 0;">{data['name']}</h3>
             <div style="font-size: 3rem; font-weight: 300; margin: 1rem 0;">
-                {celsius_temp:.1f}°C
+                {data['temperature']}°C
             </div>
             <p style="font-size: 1.1rem; margin: 0; opacity: 0.9;">
                 {data['shortForecast']}
