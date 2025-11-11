@@ -28,23 +28,23 @@ def get_l_train_arrivals(stop_ids=["L1S"]):
 
         arrivals = {stop_id: [] for stop_id in stop_ids}
         logging.debug(f"Processing stop IDs: {stop_ids}")
-        for entity in feed.entity:
-            if entity.HasField("trip_update"):
-                trip_id = entity.trip_update.trip.trip_id
-                route_id = entity.trip_update.trip.route_id
-                for update in entity.trip_update.stop_time_update:
-                    logging.debug(f"Checking stop ID: {update.stop_id}")
-                    if update.stop_id in stop_ids and update.arrival.time:
-                        arrival_time = datetime.datetime.fromtimestamp(update.arrival.time)
-                        minutes = int((arrival_time - datetime.datetime.now()).total_seconds() // 60)
-                        if minutes >= 0:
-                            arrivals[update.stop_id].append({
-                                "minutes": minutes,
-                                "trip_id": trip_id,
-                                "route_id": route_id,
-                                "arrival_time": arrival_time.strftime("%Y-%m-%d %H:%M:%S"),
-                            })
-        logging.debug(f"Arrivals after processing: {arrivals}")
+        # for entity in feed.entity:
+        #     if entity.HasField("trip_update"):
+        #         trip_id = entity.trip_update.trip.trip_id
+        #         route_id = entity.trip_update.trip.route_id
+        #         for update in entity.trip_update.stop_time_update:
+        #             logging.debug(f"Checking stop ID: {update.stop_id}")
+        #             if update.stop_id in stop_ids and update.arrival.time:
+        #                 arrival_time = datetime.datetime.fromtimestamp(update.arrival.time)
+        #                 minutes = int((arrival_time - datetime.datetime.now()).total_seconds() // 60)
+        #                 if minutes >= 0:
+        #                     arrivals[update.stop_id].append({
+        #                         "minutes": minutes,
+        #                         "trip_id": trip_id,
+        #                         "route_id": route_id,
+        #                         "arrival_time": arrival_time.strftime("%Y-%m-%d %H:%M:%S"),
+        #                     })
+        # logging.debug(f"Arrivals after processing: {arrivals}")
         return arrivals
     except requests.exceptions.RequestException as e:
         logging.error(f"Request error: {e}")
