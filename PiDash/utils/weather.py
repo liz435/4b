@@ -20,7 +20,7 @@ def get_weather(lat, lon):
         forecast_data = forecast_resp.json()
 
         # 获取最近的预报信息
-        period = forecast_data["properties"]["periods"][2]
+        period = forecast_data["properties"]["periods"][0]
         return {
             "name": period["name"],
             "temperature": period["temperature"],
