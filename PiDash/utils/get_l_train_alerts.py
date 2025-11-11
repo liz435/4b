@@ -1,8 +1,9 @@
 from google.transit import gtfs_realtime_pb2
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
+import pytz
 
-def get_l_train_alerts(latest_only=True, route_filter="L"):
+def get_l_train_alerts(latest_only=False, route_filter="L"):
     url = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts"
     feed = gtfs_realtime_pb2.FeedMessage()
     try:
@@ -31,11 +32,21 @@ def get_l_train_alerts(latest_only=True, route_filter="L"):
                         "formatted": formatted_alert
                     })
 
-        # Sort alerts by timestamp (descending) and return the latest one if latest_only is True
-        alerts.sort(key=lambda x: x["timestamp"], reverse=True)
+        # Filter alerts to only include those for today and tomorrow (New York time)
+        nyc_now = datetime.now(pytz.timezone("America/New_York"))
+        nyc_today = nyc_now.date()
+        nyc_tomorrow = nyc_today + timedelta(days=1)
+
+        filtered_alerts = [
+            alert for alert in alerts
+            if nyc_today <= datetime.fromtimestamp(alert["timestamp"], pytz.timezone("America/New_York")).date() <= nyc_tomorrow
+        ]
+
+        # Sort filtered alerts by timestamp (descending) and return the latest one if latest_only is True
+        filtered_alerts.sort(key=lambda x: x["timestamp"], reverse=True)
         if latest_only:
-            return [alerts[0]["formatted"], alerts[1]["formatted"] ] if alerts else []
-        return [alert["formatted"] for alert in alerts]
+            return [filtered_alerts[0]["formatted"], filtered_alerts[1]["formatted"]] if filtered_alerts else []
+        return [alert["formatted"] for alert in filtered_alerts]
     except Exception as e:
         print("Error fetching alerts:", e)
         return []
