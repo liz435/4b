@@ -5,25 +5,12 @@ from utils.get_l_train_alerts import get_l_train_alerts
 from utils.get_l_train_arrivals import get_l_train_arrivals
 from streamlit_autorefresh import st_autorefresh
 import time
-import pytz
-
-# ---- Determine Theme Based on Time ----
-ny_tz = pytz.timezone("America/New_York")
-current_hour = datetime.datetime.now(ny_tz).hour
-if 6 <= current_hour < 19:
-    theme = "light"
-else:
-    theme = "dark"
 
 # ---- Page Config ----
 st.set_page_config(
     page_title="4B Dashboard",
     page_icon="📊",
     layout="wide",
-    initial_sidebar_state="expanded",
-    theme={
-        "base": theme  # Dynamically set theme based on time
-    }
 )
 
 # ---- Auto Refresh Every 30s ----
@@ -33,17 +20,6 @@ count = st_autorefresh(interval=30 * 1000, key="datarefresh")
 st.title("4B")
 st.caption(f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-st.markdown(
-    f"""
-    <style>
-        body {{
-            background-color: {'#ffffff' if theme == 'light' else '#333333'};
-            color: {'#000000' if theme == 'light' else '#ffffff'};
-        }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # ---- Split Page into Two Columns ----
 col1, col2 = st.columns(2)
@@ -52,17 +28,15 @@ col1, col2 = st.columns(2)
 # LEFT COLUMN: WEATHER
 # ================================================================
 with col1:
-    # Display current date and time in New York timezone
-    ny_tz = pytz.timezone("America/New_York")
-    current_time = datetime.datetime.now(ny_tz).strftime("%Y-%m-%d %H:%M:%S")
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     st.markdown(
-        f"""
-        <div style='text-align: center;'>
-            <h1>🕒 {current_time}</h1>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    f"""
+    <div style='text-align: center;'>
+        <h1>🕒 {current_time}</h1>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
     st.header("🌤 Outdoor Weather (Bushwick)")
     lat, lon = 40.7128, -74.0060
 
