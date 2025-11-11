@@ -1,5 +1,7 @@
-protobuf==3.20.0
-Requests==2.32.5
 streamlit==1.28.2
-streamlit_autorefresh==1.0.1
-google-transit-bindings>=0.0.5
+requests
+protobuf==3.20.0
+gtfs-realtime-bindings
+streamlit-autorefresh
+pandas
+numpy
