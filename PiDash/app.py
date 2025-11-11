@@ -75,7 +75,7 @@ st.markdown("""
     }
     
     .last-updated {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
         opacity: 0.5;
         margin-bottom: 1rem;
     }
@@ -196,7 +196,7 @@ st.markdown("""
     }
     
     .train-time {
-        font-size: 1.5rem;
+        font-size: 2rem;
         font-weight: 700;
     }
     
@@ -238,15 +238,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
+
 # ---- Auto Refresh Every 30s ----
-count = st_autorefresh(interval=30 * 1000, key="datarefresh")
+count = st_autorefresh(interval=15 * 1000, key="datarefresh")
 
 # ---- Get NYC Time ----
 nyc_time = datetime.datetime.now(pytz.timezone("America/New_York"))
 
 # ---- Header ----
-st.title("Ebichu")
-st.markdown(f'<div class="last-updated">Last updated: {nyc_time.strftime("%B %d, %Y at %I:%M:%S %p")}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="last-updated">Last updated: {nyc_time.strftime("%B %d @ %I:%M:%S %p")}</div>', unsafe_allow_html=True)
 
 # ---- Split Page into Two Columns ----
 col1, col2 = st.columns([1, 1], gap="medium")
@@ -305,7 +306,7 @@ with col1:
 # ================================================================
 with col2:
     st.markdown('<div class="train-section">', unsafe_allow_html=True)
-    st.markdown('<div class="section-header">L Train at Jefferson St</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">L Train @ Jefferson St</div>', unsafe_allow_html=True)
 
     # Fetch alerts and arrival data
     alerts = get_l_train_alerts()
