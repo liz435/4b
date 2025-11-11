@@ -23,6 +23,24 @@ st.markdown("""
         padding-top: 1rem;
         padding-bottom: 0.5rem;
         max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+    
+    /* Make columns flex containers */
+    [data-testid="column"] {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    /* Flex container for sections */
+    .flex-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
     }
     
     /* Hide Streamlit branding */
@@ -81,6 +99,7 @@ st.markdown("""
         padding: 1.5rem;
         text-align: center;
         margin-bottom: 1rem;
+        flex-shrink: 0;
     }
     
     .temp-large {
@@ -137,14 +156,32 @@ st.markdown("""
         font-size: 0.9rem;
         line-height: 1.5;
         opacity: 0.85;
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
     }
     
     /* Train section */
+    .train-section {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+    }
+    
+    .train-arrivals {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    
     .train-direction {
         font-size: 0.9rem;
         font-weight: 600;
         margin-bottom: 0.5rem;
         opacity: 0.8;
+        flex-shrink: 0;
     }
     
     /* Train arrival cards */
@@ -270,6 +307,7 @@ with col1:
 # RIGHT COLUMN: L TRAIN
 # ================================================================
 with col2:
+    st.markdown('<div class="train-section">', unsafe_allow_html=True)
     st.markdown('<div class="section-header">L Train at Jefferson St</div>', unsafe_allow_html=True)
 
     # Fetch alerts and arrival data
@@ -283,6 +321,7 @@ with col2:
     else:
         st.markdown('<div class="no-alert">No current service alerts</div>', unsafe_allow_html=True)
 
+    st.markdown('<div class="train-arrivals">', unsafe_allow_html=True)
     # ---- Arrivals in Two Columns ----
     up_col, down_col = st.columns(2)
 
@@ -317,3 +356,6 @@ with col2:
                 """, unsafe_allow_html=True)
         else:
             st.markdown('<div class="no-data">No upcoming trains</div>', unsafe_allow_html=True)
+    
+    st.markdown('</div>', unsafe_allow_html=True)  # Close train-arrivals
+    st.markdown('</div>', unsafe_allow_html=True)  # Close train-section
