@@ -1,5 +1,6 @@
 from google.transit import gtfs_realtime_pb2
 import requests, datetime
+import openai
 
 def get_mta_status(stop_id="L20S"):
     """
@@ -22,3 +23,27 @@ def get_mta_status(stop_id="L20S"):
                     if minutes >= 0:
                         arrivals.append(minutes)
     return sorted(arrivals)[:5]
+
+# Function to interact with OpenAI API
+def query_openai(prompt, model="gpt-3.5-turbo", max_tokens=100):
+    """
+    Query the OpenAI API with a given prompt.
+
+    Args:
+        prompt (str): The input prompt to send to the OpenAI API.
+        model (str): The model to use for the query (default: gpt-3.5-turbo).
+        max_tokens (int): The maximum number of tokens to return (default: 100).
+
+    Returns:
+        str: The response text from the OpenAI API.
+    """
+    try:
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens
+        )
+        return response['choices'][0]['message']['content'].strip()
+    except Exception as e:
+        print(f"Error querying OpenAI API: {e}")
+        return None

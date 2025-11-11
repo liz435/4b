@@ -325,7 +325,7 @@ with col2:
 
     with up_col:
         st.markdown('<div class="train-direction">To 8 Av MANHATTAN</div>', unsafe_allow_html=True)
-        northbound = arrivals.get("L15N", [])[:4]
+        northbound = arrivals.get("L15N", [])[:3]
         if northbound:
             for arrival in northbound:
                 st.markdown(f"""
@@ -341,7 +341,7 @@ with col2:
 
     with down_col:
         st.markdown('<div class="train-direction">To Canarsie ROCKAWAY</div>', unsafe_allow_html=True)
-        southbound = arrivals.get("L15S", [])[:4]
+        southbound = arrivals.get("L15S", [])[:3]
         if southbound:
             for arrival in southbound:
                 st.markdown(f"""

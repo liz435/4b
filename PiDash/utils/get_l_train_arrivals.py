@@ -5,7 +5,7 @@ import logging
 # Configure logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def get_l_train_arrivals(stop_ids=["L1S"]):
+def get_l_train_arrivals(stop_ids=["L15"]):
     """
     Fetch arrival times for multiple stop IDs from the GTFS Realtime feed.
 
