@@ -9,7 +9,7 @@ import pytz
 
 # ---- Page Config ----
 st.set_page_config(
-    page_title="4B Dashboard",
+    page_title="Ebichu Dashboard",
     page_icon="📊",
     layout="wide",
 )
@@ -19,7 +19,7 @@ count = st_autorefresh(interval=30 * 1000, key="datarefresh")
 
 # ---- Top Bar ----
 nyc_time = datetime.datetime.now(pytz.timezone("America/New_York"))
-st.title("4B")
+st.title("Ebichu")
 st.caption(f"Last updated: {nyc_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
 # ---- Split Page into Two Columns ----
@@ -32,13 +32,13 @@ with col1:
     current_time = nyc_time.strftime("%Y-%m-%d %H:%M")
     st.markdown(
     f"""
-    <div style='text-align: center;'>
-        <h1>🕒 {current_time}</h1>
+    <div style='text-align: left;'>
+        <h1>{current_time}</h1>
     </div>
     """,
     unsafe_allow_html=True
 )
-    st.header("🌤 Outdoor Weather (Bushwick)")
+    st.header("Outdoor Weather (Bushwick)")
     lat, lon = 40.7128, -74.0060
 
     with st.spinner("Fetching weather data..."):
@@ -79,7 +79,7 @@ with col2:
     arrivals = get_l_train_arrivals(["L15N", "L15S"])
 
     # ---- Alerts ----
-    st.subheader("🚨 Alerts")
+    st.subheader("Alerts")
     if alerts:
         for a in alerts:
             st.warning(a)
