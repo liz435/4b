@@ -187,8 +187,7 @@ st.markdown("""
     /* Train arrival cards */
     .train-card {
         background-color: var(--secondary-background-color);
-        border-left: 3px solid #0066CC;
-        border-radius: 6px;
+        border-left: 3px solid #666666;
         padding: 0.75rem 1rem;
         margin-bottom: 0.5rem;
         display: flex;
@@ -211,7 +210,6 @@ st.markdown("""
         background-color: #FFF3CD;
         color: #856404;
         border-left: 3px solid #FFC107;
-        border-radius: 6px;
         padding: 0.75rem;
         margin-bottom: 0.75rem;
         font-size: 0.9rem;
@@ -225,7 +223,6 @@ st.markdown("""
     .no-alert {
         background-color: var(--secondary-background-color);
         border-left: 3px solid #28a745;
-        border-radius: 6px;
         padding: 0.75rem;
         margin-bottom: 0.75rem;
         font-size: 0.9rem;
@@ -327,7 +324,7 @@ with col2:
 
     with up_col:
         st.markdown('<div class="train-direction">To 8 Av</div>', unsafe_allow_html=True)
-        northbound = arrivals.get("L15N", [])[:3]
+        northbound = arrivals.get("L15N", [])[:4]
         if northbound:
             for arrival in northbound:
                 st.markdown(f"""
@@ -343,7 +340,7 @@ with col2:
 
     with down_col:
         st.markdown('<div class="train-direction">To Canarsie</div>', unsafe_allow_html=True)
-        southbound = arrivals.get("L15S", [])[:3]
+        southbound = arrivals.get("L15S", [])[:4]
         if southbound:
             for arrival in southbound:
                 st.markdown(f"""
