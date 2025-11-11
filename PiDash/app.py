@@ -5,6 +5,7 @@ from utils.get_l_train_alerts import get_l_train_alerts
 from utils.get_l_train_arrivals import get_l_train_arrivals
 from streamlit_autorefresh import st_autorefresh
 import time
+import pytz
 
 # ---- Page Config ----
 st.set_page_config(
@@ -17,9 +18,9 @@ st.set_page_config(
 count = st_autorefresh(interval=30 * 1000, key="datarefresh")
 
 # ---- Top Bar ----
+nyc_time = datetime.datetime.now(pytz.timezone("America/New_York"))
 st.title("4B")
-st.caption(f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
+st.caption(f"Last updated: {nyc_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
 # ---- Split Page into Two Columns ----
 col1, col2 = st.columns(2)
@@ -28,7 +29,7 @@ col1, col2 = st.columns(2)
 # LEFT COLUMN: WEATHER
 # ================================================================
 with col1:
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    current_time = nyc_time.strftime("%Y-%m-%d %H:%M")
     st.markdown(
     f"""
     <div style='text-align: center;'>
