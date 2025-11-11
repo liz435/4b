@@ -7,11 +7,23 @@ from streamlit_autorefresh import st_autorefresh
 import time
 import pytz
 
+# ---- Determine Theme Based on Time ----
+ny_tz = pytz.timezone("America/New_York")
+current_hour = datetime.datetime.now(ny_tz).hour
+if 6 <= current_hour < 19:
+    theme = "light"
+else:
+    theme = "dark"
+
 # ---- Page Config ----
 st.set_page_config(
     page_title="4B Dashboard",
     page_icon="📊",
     layout="wide",
+    initial_sidebar_state="expanded",
+    theme={
+        "base": theme  # Dynamically set theme based on time
+    }
 )
 
 # ---- Auto Refresh Every 30s ----
@@ -20,14 +32,6 @@ count = st_autorefresh(interval=30 * 1000, key="datarefresh")
 # ---- Top Bar ----
 st.title("4B")
 st.caption(f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-# Determine theme based on time
-ny_tz = pytz.timezone("America/New_York")
-current_hour = datetime.datetime.now(ny_tz).hour
-if 6 <= current_hour < 19:
-    theme = "light"
-else:
-    theme = "dark"
 
 st.markdown(
     f"""
