@@ -33,7 +33,6 @@ def get_l_train_arrivals(stop_ids=["L1S"]):
                 trip_id = entity.trip_update.trip.trip_id
                 route_id = entity.trip_update.trip.route_id
                 for update in entity.trip_update.stop_time_update:
-                    logging.debug(f"Checking stop ID: {update.stop_id}")
                     if update.stop_id in stop_ids and update.arrival.time:
                         arrival_time = datetime.datetime.fromtimestamp(update.arrival.time)
                         minutes = int((arrival_time - datetime.datetime.now()).total_seconds() // 60)
