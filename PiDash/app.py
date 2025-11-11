@@ -5,6 +5,7 @@ from utils.get_l_train_alerts import get_l_train_alerts
 from utils.get_l_train_arrivals import get_l_train_arrivals
 from streamlit_autorefresh import st_autorefresh
 import time
+import pytz
 
 # ---- Page Config ----
 st.set_page_config(
@@ -28,15 +29,17 @@ col1, col2 = st.columns(2)
 # LEFT COLUMN: WEATHER
 # ================================================================
 with col1:
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    # Display current date and time in New York timezone
+    ny_tz = pytz.timezone("America/New_York")
+    current_time = datetime.datetime.now(ny_tz).strftime("%Y-%m-%d %H:%M:%S")
     st.markdown(
-    f"""
-    <div style='text-align: center;'>
-        <h1>🕒 {current_time}</h1>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        f"""
+        <div style='text-align: center;'>
+            <h1>🕒 {current_time}</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     st.header("🌤 Outdoor Weather (Bushwick)")
     lat, lon = 40.7128, -74.0060
 
